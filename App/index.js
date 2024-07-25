@@ -1,45 +1,81 @@
 // Filename: index.js
 // Combined code from all files
-import React from 'react';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, Alert, View } from 'react-native';
+
+import React, { useState } from 'react';
+import { SafeAreaView, StyleSheet, Text, TextInput, Button, FlatList, View } from 'react-native';
 
 const App = () => {
-    const handlePress = () => {
-        Alert.alert("Alert", "You clicked the box!");
+    const [workoutName, setWorkoutName] = useState('');
+    const [workoutList, setWorkoutList] = useState([]);
+
+    const addWorkout = () => {
+        if (workoutName.trim() !== '') {
+            setWorkoutList([...workoutList, { id: Date.now().toString(), name: workoutName }]);
+            setWorkoutName('');
+        }
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.boxContainer}>
-                <TouchableOpacity style={styles.box} onPress={handlePress}>
-                    <Text style={styles.boxText}>Click Me</Text>
-                </TouchableOpacity>
-            </View>
+            <Text style={styles.title}>Workout Tracker</Text>
+            
+            <TextInput 
+                style={styles.input} 
+                placeholder="Enter workout name" 
+                value={workoutName} 
+                onChangeText={setWorkoutName} 
+            />
+            
+            <Button title="Add Workout" onPress={addWorkout} />
+            
+            <FlatList 
+                data={workoutList} 
+                keyExtractor={(item) => item.id} 
+                renderItem={({ item }) => (
+                    <View style={styles.workoutItem}>
+                        <Text style={styles.workoutItemText}>{item.name}</Text>
+                    </View>
+                )}
+                contentContainerStyle={styles.list}
+            />
         </SafeAreaView>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
-        paddingTop: 20, // Margin from the top to avoid overlapping with the status bar
+        backgroundColor: '#f5f5f5',
+        padding: 20,
+        paddingTop: 40, // Margin from the top to avoid overlapping with the status bar
     },
-    boxContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    box: {
-        backgroundColor: 'red',
-        paddingVertical: 20,
-        paddingHorizontal: 40,
-        borderRadius: 10,
-    },
-    boxText: {
-        color: '#FFFFFF',
-        fontSize: 18,
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
         textAlign: 'center',
+    },
+    input: {
+        backgroundColor: '#fff',
+        padding: 10,
+        borderRadius: 8,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+    },
+    list: {
+        marginTop: 20,
+    },
+    workoutItem: {
+        backgroundColor: '#fff',
+        padding: 15,
+        marginVertical: 8,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#ccc',
+    },
+    workoutItemText: {
+        fontSize: 18,
     },
 });
 

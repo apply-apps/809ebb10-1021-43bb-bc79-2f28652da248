@@ -2,7 +2,15 @@
 // Combined code from all files
 
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, ScrollView, Alert } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TextInput, View, ScrollView, Alert, TouchableOpacity } from 'react-native';
+
+const CustomButton = ({ title, onPress, style, textStyle }) => {
+    return (
+        <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
+            <Text style={[styles.buttonText, textStyle]}>{title}</Text>
+        </TouchableOpacity>
+    );
+};
 
 const App = () => {
     const [exerciseName, setExerciseName] = useState('');
@@ -53,9 +61,7 @@ const App = () => {
                         keyboardType="numeric"
                     />
                 </View>
-                <TouchableOpacity style={styles.button} onPress={handleAddWorkout}>
-                    <Text style={styles.buttonText}>Add Workout</Text>
-                </TouchableOpacity>
+                <CustomButton title="Add Workout" onPress={handleAddWorkout} />
                 <Text style={styles.listTitle}>Workout List</Text>
                 {workouts.map((workout) => (
                     <View key={workout.id} style={styles.workoutItem}>
@@ -97,17 +103,6 @@ const styles = StyleSheet.create({
         borderColor: '#ddd',
         borderWidth: 1,
     },
-    button: {
-        backgroundColor: '#007bff',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-    },
-    buttonText: {
-        color: '#ffffff',
-        fontSize: 18,
-        textAlign: 'center',
-    },
     listTitle: {
         fontSize: 20,
         fontWeight: 'bold',
@@ -126,6 +121,17 @@ const styles = StyleSheet.create({
     },
     workoutText: {
         fontSize: 16,
+    },
+    button: {
+        backgroundColor: '#007bff',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#ffffff',
+        fontSize: 18,
     },
 });
 

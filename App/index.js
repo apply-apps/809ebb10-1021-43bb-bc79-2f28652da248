@@ -2,42 +2,69 @@
 // Combined code from all files
 
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TextInput, Button, FlatList, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, ScrollView, Alert } from 'react-native';
 
 const App = () => {
-    const [workoutName, setWorkoutName] = useState('');
-    const [workoutList, setWorkoutList] = useState([]);
+    const [exerciseName, setExerciseName] = useState('');
+    const [sets, setSets] = useState('');
+    const [reps, setReps] = useState('');
+    const [workouts, setWorkouts] = useState([]);
 
-    const addWorkout = () => {
-        if (workoutName.trim() !== '') {
-            setWorkoutList([...workoutList, { id: Date.now().toString(), name: workoutName }]);
-            setWorkoutName('');
+    const handleAddWorkout = () => {
+        if (exerciseName && sets && reps) {
+            const newWorkout = {
+                id: Math.random().toString(),
+                exerciseName,
+                sets,
+                reps,
+            };
+            setWorkouts([...workouts, newWorkout]);
+            setExerciseName('');
+            setSets('');
+            setReps('');
+        } else {
+            Alert.alert("Error", "Please fill all fields.");
         }
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Workout Tracker</Text>
-            
-            <TextInput 
-                style={styles.input} 
-                placeholder="Enter workout name" 
-                value={workoutName} 
-                onChangeText={setWorkoutName} 
-            />
-            
-            <Button title="Add Workout" onPress={addWorkout} />
-            
-            <FlatList 
-                data={workoutList} 
-                keyExtractor={(item) => item.id} 
-                renderItem={({ item }) => (
-                    <View style={styles.workoutItem}>
-                        <Text style={styles.workoutItemText}>{item.name}</Text>
+            <ScrollView contentContainerStyle={styles.scrollView}>
+                <Text style={styles.title}>Workout Tracker</Text>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        placeholder="Exercise Name"
+                        value={exerciseName}
+                        onChangeText={setExerciseName}
+                        style={styles.input}
+                    />
+                    <TextInput
+                        placeholder="Sets"
+                        value={sets}
+                        onChangeText={setSets}
+                        style={styles.input}
+                        keyboardType="numeric"
+                    />
+                    <TextInput
+                        placeholder="Reps"
+                        value={reps}
+                        onChangeText={setReps}
+                        style={styles.input}
+                        keyboardType="numeric"
+                    />
+                </View>
+                <TouchableOpacity style={styles.button} onPress={handleAddWorkout}>
+                    <Text style={styles.buttonText}>Add Workout</Text>
+                </TouchableOpacity>
+                <Text style={styles.listTitle}>Workout List</Text>
+                {workouts.map((workout) => (
+                    <View key={workout.id} style={styles.workoutItem}>
+                        <Text style={styles.workoutText}>{workout.exerciseName}</Text>
+                        <Text style={styles.workoutText}>Sets: {workout.sets}</Text>
+                        <Text style={styles.workoutText}>Reps: {workout.reps}</Text>
                     </View>
-                )}
-                contentContainerStyle={styles.list}
-            />
+                ))}
+            </ScrollView>
         </SafeAreaView>
     );
 };
@@ -45,37 +72,60 @@ const App = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
-        padding: 20,
-        paddingTop: 40, // Margin from the top to avoid overlapping with the status bar
+        backgroundColor: '#f8f8f8',
+        paddingTop: 20,
+    },
+    scrollView: {
+        paddingHorizontal: 20,
+        alignItems: 'center',
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
-        textAlign: 'center',
+    },
+    inputContainer: {
+        width: '100%',
+        marginBottom: 20,
     },
     input: {
-        backgroundColor: '#fff',
+        backgroundColor: '#ffffff',
         padding: 10,
-        borderRadius: 8,
         marginBottom: 10,
+        borderRadius: 5,
+        width: '100%',
+        borderColor: '#ddd',
         borderWidth: 1,
-        borderColor: '#ccc',
     },
-    list: {
+    button: {
+        backgroundColor: '#007bff',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+    },
+    buttonText: {
+        color: '#ffffff',
+        fontSize: 18,
+        textAlign: 'center',
+    },
+    listTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
         marginTop: 20,
     },
     workoutItem: {
-        backgroundColor: '#fff',
+        backgroundColor: '#ffffff',
         padding: 15,
-        marginVertical: 8,
-        borderRadius: 8,
+        borderRadius: 5,
+        width: '100%',
+        marginBottom: 10,
+        borderColor: '#ddd',
         borderWidth: 1,
-        borderColor: '#ccc',
+        alignItems: 'center',
     },
-    workoutItemText: {
-        fontSize: 18,
+    workoutText: {
+        fontSize: 16,
     },
 });
 
